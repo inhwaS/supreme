@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - main  # Change to your desired branch
+      - master
 
 jobs:
   build:
