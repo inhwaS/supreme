@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - master
+      - main  # Change to your desired branch
 
 jobs:
   build:
@@ -21,8 +21,14 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}  # Optional if using temporary credentials
           AWS_REGION: us-east-1  # Replace with your actual AWS region
+
+      - name: Get AWS Account ID
+        id: get-account-id
+        run: |
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          echo "ACCOUNT_ID=${ACCOUNT_ID}" >> $GITHUB_ENV
 
       - name: Build and push Docker images
         env:
@@ -31,10 +37,8 @@ jobs:
           ECR_REPO_NAME_FRONTEND: supreme-frontend
           ECR_REPO_NAME_NGINX: supreme-nginx
           IMAGE_TAG: latest  # You can change this to a specific version/tag
+          ACCOUNT_ID: ${{ env.ACCOUNT_ID }}  # Reference the ACCOUNT_ID from the previous step
         run: |
-          # Get the account ID
-          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-
           # Full ECR repository URIs
           ECR_URI_BACKEND="${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME_BACKEND}"
           ECR_URI_FRONTEND="${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME_FRONTEND}"
@@ -44,4 +48,4 @@ jobs:
           echo "Building multi-architecture Docker images..."
           docker buildx build --platform linux/amd64,linux/arm64 -t ${ECR_URI_BACKEND}:${IMAGE_TAG} --push ./demo
           docker buildx build --platform linux/amd64,linux/arm64 -t ${ECR_URI_FRONTEND}:${IMAGE_TAG} --push ./front
-          docker buil
+          docker buildx build --platform linux/amd64,linux/arm64 -t ${ECR_URI_NGINX}:${IMAGE_TAG} --push .
