@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main  # Change to your desired branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build and push Docker images
+        env:
+          AWS_REGION: us-east-1  # Replace with your actual AWS region
+          ECR_REPO_NAME_BACKEND: supreme-backend
+          ECR_REPO_NAME_FRONTEND: supreme-frontend
+          ECR_REPO_NAME_NGINX: supreme-nginx
+          IMAGE_TAG: latest  # You can change this to a specific version/tag
+        run: |
+          # Get the account ID
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+          # Full ECR repository URIs
+          ECR_URI_BACKEND="${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME_BACKEND}"
+          ECR_URI_FRONTEND="${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME_FRONTEND}"
+          ECR_URI_NGINX="${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME_NGINX}"
+
+          # Build images for both architectures
+          echo "Building multi-architecture Docker images..."
+          docker buildx build --platform linux/amd64,linux/arm64 -t ${ECR
+
