@@ -21,7 +21,7 @@ app.get('/fetch-data', async (req, res) => {
 
 // Root route
 app.get('/', (req, res) => {
-    res.send('Hello, World!');
+    res.send('Hello, World! I am deployed by Github Workflow!!');
 });
 
 app.listen(PORT, () => {
