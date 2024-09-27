@@ -24,17 +24,6 @@ jobs:
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}  # Optional if using temporary credentials
           AWS_REGION: us-east-1  # Replace with your actual AWS region
 
-      - name: Get AWS Account ID
-        id: get-account-id
-        run: |
-          echo "Fetching AWS Account ID..."
-          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text 2>&1)
-          if [[ $? -ne 0 ]]; then
-            echo "Error fetching account ID: $ACCOUNT_ID"
-            exit 1
-          fi
-          echo "ACCOUNT_ID=${ACCOUNT_ID}" >> $GITHUB_ENV
-
       - name: Build and push Docker images
         env:
           AWS_REGION: us-east-1  # Replace with your actual AWS region
@@ -42,7 +31,7 @@ jobs:
           ECR_REPO_NAME_FRONTEND: supreme-frontend
           ECR_REPO_NAME_NGINX: supreme-nginx
           IMAGE_TAG: latest  # You can change this to a specific version/tag
-          ACCOUNT_ID: ${{ env.ACCOUNT_ID }}  # Reference the ACCOUNT_ID from the previous step
+          ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}  # Reference the ACCOUNT_ID from the previous step
         run: |
           # Full ECR repository URIs
           ECR_URI_BACKEND="${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME_BACKEND}"
