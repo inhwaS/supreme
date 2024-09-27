@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: demo-app
+  # datasource:
+  #   url: jdbc:mysql://localhost:3306/yourdb
+  #   username: yourusername
+  #   password: yourpassword
+  #   driver-class-name: com.mysql.cj.jdbc.Driver
+  # jpa:
+  #   hibernate:
+  #     ddl-auto: update
+  #   show-sql: true
+  #   properties:
+  #     hibernate:
+  #       format_sql: true
+
+server:
+  port: 8080
+  context-path: /api
+
+logging:
+  level:
+    root: INFO
+    com.cloudcomputing.demo: DEBUG
+
+# CORS Configuration
+cors:
+  allowed-origins: 
+    - http://localhost:3000
+  allowed-methods: 
+    - GET
+    - POST
+    - PUT
+    - DELETE
