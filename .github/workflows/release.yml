@@ -27,7 +27,12 @@ jobs:
       - name: Get AWS Account ID
         id: get-account-id
         run: |
-          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          echo "Fetching AWS Account ID..."
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text 2>&1)
+          if [[ $? -ne 0 ]]; then
+            echo "Error fetching account ID: $ACCOUNT_ID"
+            exit 1
+          fi
           echo "ACCOUNT_ID=${ACCOUNT_ID}" >> $GITHUB_ENV
 
       - name: Build and push Docker images
