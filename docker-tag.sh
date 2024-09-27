@@ -27,6 +27,6 @@ echo "Building multi-architecture Docker images..."
 # Use --platform to build for both architectures
 docker buildx build --platform linux/amd64,linux/arm64 -t ${ECR_URI_BACKEND}:${IMAGE_TAG} --push ./demo
 docker buildx build --platform linux/amd64,linux/arm64 -t ${ECR_URI_FRONTEND}:${IMAGE_TAG} --push ./front
-docker buildx build --platform linux/amd64,linux/arm64 -t ${ECR_URI_NGINX}:${IMAGE_TAG} --push .
+docker buildx build --platform linux/amd64,linux/arm64 -t ${ECR_URI_NGINX}:${IMAGE_TAG} --push ./nginx
 
 echo "Pushed multi-architecture images to ECR."
