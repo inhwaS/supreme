@@ -18,12 +18,11 @@ jobs:
 
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
-        with:
-          region: us-east-1  # Replace with your actual AWS region
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          AWS_REGION: us-east-1  # Replace with your actual AWS region
 
       - name: Build and push Docker images
         env:
@@ -45,4 +44,4 @@ jobs:
           echo "Building multi-architecture Docker images..."
           docker buildx build --platform linux/amd64,linux/arm64 -t ${ECR_URI_BACKEND}:${IMAGE_TAG} --push ./demo
           docker buildx build --platform linux/amd64,linux/arm64 -t ${ECR_URI_FRONTEND}:${IMAGE_TAG} --push ./front
-          docker buildx build --platform linux/amd64,linux/arm64 -t ${ECR_URI_NGINX}:${IMAGE_TAG} --push .
+          docker buil
