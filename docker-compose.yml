@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./demo
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"  # Map backend port
+    environment:
+      SPRING_PROFILES_ACTIVE: prod  # Set active profile to production
+
+  frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  # Map frontend port to Nginx port
+    environment:
+      - REACT_APP_API_URL=http://backend:8080/api  # API URL for frontend
+    depends_on:
+      - backend

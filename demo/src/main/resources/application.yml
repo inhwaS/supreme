@@ -1,18 +1,9 @@
 spring:
   application:
     name: demo-app
-  # datasource:
-  #   url: jdbc:mysql://localhost:3306/yourdb
-  #   username: yourusername
-  #   password: yourpassword
-  #   driver-class-name: com.mysql.cj.jdbc.Driver
-  # jpa:
-  #   hibernate:
-  #     ddl-auto: update
-  #   show-sql: true
-  #   properties:
-  #     hibernate:
-  #       format_sql: true
+  config:
+    activate:
+      on-profile: prod  # Use 'on-profile' instead of 'profiles'
 
 server:
   port: 8080
@@ -32,3 +23,17 @@ cors:
     - POST
     - PUT
     - DELETE
+
+---
+# Production profile
+spring:
+  server:
+    port: 80  # Change to production port if necessary
+  cors:
+    allowed-origins: 
+      - https://your-production-url.com
+    allowed-methods: 
+      - GET
+      - POST
+      - PUT
+      - DELETE

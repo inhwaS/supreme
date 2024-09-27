@@ -39,3 +39,12 @@ tasks.withType(JavaCompile) {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+
+tasks.named('bootJar') {
+    archiveFileName.set('my-backend-app.jar')  // Set the desired name for the JAR file
+}
+
+tasks.named('jar') {
+    enabled = false  // Disable the regular Jar task if you want only bootJar
+}
