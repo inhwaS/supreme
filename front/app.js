@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const dotenv = require('dotenv');
+const path = require('path');
 
 // Load environment variables from .env file based on NODE_ENV
 const env = process.env.NODE_ENV || 'development';
@@ -10,20 +11,25 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const BACKEND_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
 
+// Serve static files from the 'public' folder
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve the index page from the 'views' folder
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
+
+// Fetch data and serve result page
 app.get('/fetch-data', async (req, res) => {
     const param = req.query.param || 'default';
     try {
         const response = await axios.get(`${BACKEND_URL}/hello`, {
             params: { param: param }
         });
-        res.send(response.data);
+        res.sendFile(path.join(__dirname, 'views', 'fetch-data.html'));
     } catch (error) {
-        res.status(500).send('Error fetching data from the backend: ' + error.message);
+        res.status(500).sendFile(path.join(__dirname, 'views', 'error.html'));
     }
-});
-
-app.get('/', (req, res) => {
-    res.send('Hello, World! I am deployed by Github Workflow!!');
 });
 
 app.listen(PORT, () => {

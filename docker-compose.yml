@@ -2,32 +2,35 @@ version: '3.8'
 
 services:
   backend:
+    container_name: supreme-backend
     build:
       context: ./demo
       dockerfile: Dockerfile
-    ports:
-      - "8080:8080"  # Map backend port
+    expose:
+      - "8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod  # Set active profile to production
 
   frontend:
+    container_name: supreme-frontend
     build:
       context: ./front
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"  # Map frontend port
+    expose:
+      - "3000"
     environment:
       - REACT_APP_API_URL=http://backend:8080/api  # API URL for frontend
     depends_on:
       - backend
 
   nginx:
+    container_name: supreme-nginx
     build:
       context: ./nginx
       dockerfile: Dockerfile
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf  # Mount Nginx config
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     ports:
-      - "80:80"  # Expose Nginx port
+      - "80:80"
     depends_on:
       - frontend

@@ -21,17 +21,17 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}  # Optional if using temporary credentials
-          AWS_REGION: us-east-1  # Replace with your actual AWS region
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
 
       - name: Build and push Docker images
         env:
-          AWS_REGION: us-east-1  # Replace with your actual AWS region
+          AWS_REGION:  ${{ secrets.AWS_REGION }}
           ECR_REPO_NAME_BACKEND: supreme-backend
           ECR_REPO_NAME_FRONTEND: supreme-frontend
           ECR_REPO_NAME_NGINX: supreme-nginx
-          IMAGE_TAG: latest  # You can change this to a specific version/tag
-          ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}  # Reference the ACCOUNT_ID from the previous step
+          IMAGE_TAG: latest
+          ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
         run: |
           # Full ECR repository URIs
           ECR_URI_BACKEND="${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME_BACKEND}"
